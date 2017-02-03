@@ -76,11 +76,6 @@ StringObfuscator::StringObfuscator()
 
 }
 
-
-StringObfuscator::~StringObfuscator()
-{
-}
-
 QString StringObfuscator::obfuscate(QString p_input)
 {
     QString l_output = "";
