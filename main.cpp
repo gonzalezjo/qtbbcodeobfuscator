@@ -6,12 +6,12 @@
 int main(int argc, char *argv[])
 {
     QCoreApplication l_application(argc, argv);
-
-    std::cout << "Enter a string to obfuscate." << std::endl;
-
     QTextStream l_stream(stdin);
+    QString l_output;
 
-    const QString l_output = StringObfuscator().obfuscate(l_stream.readLine());
+    std::cout << "Enter a string to obfuscate.\n" << std::endl;
+
+    l_output = StringObfuscator().obfuscate(l_stream.readLine());
 
     std::cout << l_output.toStdString() << std::endl;
 
