@@ -5,11 +5,9 @@
 class Helper
 {
 public:
-	Helper();
-	~Helper();
+    Helper();
+    ~Helper();
     static QString color();
-private: // TODO: staticify
-	static std::default_random_engine rng;
-	static std::uniform_int_distribution<> rng_; 
+private:
 };
 

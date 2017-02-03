@@ -5,8 +5,7 @@
 #include <QDir>
 #include <QFile>
 
-using Function = std::function<QString(const QString, const bool)>;
-
+using function = std::function<QString(const QString, const bool)>;
 
 extern "C"
 {
@@ -15,96 +14,68 @@ extern "C"
     #include <luasrc/lualib.h>
 }
 
-QList<Mutation> StringObfuscator::mutations = { // hashmap would be cool
-    Mutation([](QString message, bool opened)
+QList<Mutation> StringObfuscator::p_mutations = { // hashmap would be cool
+    Mutation([](QString p_message, bool p_opened)
     {
-        return opened ? message.toUpper() : message;
+        return p_opened ? p_message.toUpper() : p_message;
     }),
-    Mutation([](QString message, bool opened)
+    Mutation([](QString p_message, bool p_opened)
     {
-        return opened ? "[i]" + message : message + "[/i]";
+        return p_opened ? "[i]" + p_message : p_message + "[/i]";
     }),
-    Mutation([](QString message, bool opened)
+    Mutation([](QString p_message, bool p_opened)
     {
-        return opened ? "[i]" + message : message + "[/i]";
+        return p_opened ? "[i]" + p_message : p_message + "[/i]";
     }),
-    Mutation([](QString message, bool opened)
+    Mutation([](QString p_message, bool p_opened)
     {
-        return opened ? "[u]" + message : message + "[/u]";
+        return p_opened ? "[u]" + p_message : p_message + "[/u]";
     }),
-    Mutation([](QString message, bool opened)
+    Mutation([](QString p_message, bool p_opened)
     {
-        return opened ? "[s]" + message : message + "[/s]";
+        return p_opened ? "[s]" + p_message : p_message + "[/s]";
     }),
-    Mutation([](QString message, bool opened)
+    Mutation([](QString p_message, bool p_opened)
     {
-        return opened ?
-            QString("[color=%1]").arg(Helper::color()):
+        return p_opened ?
+            QString("[color=%1]" + p_message).arg(Helper::color()):
             "[/color]";
     }),
 };
 
 StringObfuscator::StringObfuscator()
 {
-    QDir localQDir = QDir::currentPath() + "/scripts";
+    const QDir l_localQDir = QDir::currentPath() + "/scripts";
 
-    QStringList nameFilter;
-    nameFilter << "*.lua";
+    QStringList l_nameFilter;
+    l_nameFilter << "*.lua";
 
-    QFileInfoList scripts = localQDir.entryInfoList(nameFilter, QDir::Files);
+    const QFileInfoList scripts = l_localQDir.entryInfoList(l_nameFilter, QDir::Files);
 
-    for (QFileInfo file : scripts )
+    for (const QFileInfo l_fileInfo : scripts)
     {
-        std::function<QString(QString message, bool opened)> f = [&](QString message, bool opened) -> QString
+        const QString l_pathToFile = l_fileInfo.filePath();
+        function l_mutator = [=](QString p_message, bool p_opened) -> QString
         {
-            QString output = file.absolutePath(); // absoluteFilePath = crash. NICE
-            std::cout << "PATH: " + file.absoluteFilePath().toStdString() << std::endl;
-//            output.truncate(1);
-            int error = 0;
-            lua_State* state = lua_open();
-            luaL_openlibs(state);
-            const char* luaOutput;
-            if ((error = luaL_loadfile(state, file.absoluteFilePath().toStdString().c_str())) == 0) // the fuck
-            {
-                if ((error = lua_pcall(state, 0, LUA_MULTRET, 0)) == 0)
-                {
-                    lua_pushstring(state, "main");
-                    lua_gettable(state, LUA_GLOBALSINDEX);
-                    lua_pushstring(state, message.toStdString().c_str());
-                    lua_pushboolean(state, opened);
-                    lua_pcall(state, 2, 1, 0);
-                    luaOutput = lua_tostring(state, -1); // or tolstring?
-                }
-            }
-            lua_close(state);
-            std::cout << luaOutput << std::endl;
-            return QString(luaOutput);
+            const char* l_luaOutput;
+            lua_State* l_state = lua_open();
+
+            luaL_openlibs(l_state);
+            luaL_loadfile(l_state, l_pathToFile.toStdString().c_str());
+            lua_pcall(l_state, 0, LUA_MULTRET, 0);
+            lua_pushstring(l_state, "main");
+            lua_gettable(l_state, LUA_GLOBALSINDEX);
+            lua_pushstring(l_state, p_message.toStdString().c_str());
+            lua_pushboolean(l_state, p_opened);
+            lua_pcall(l_state, 2, 1, 0);
+            l_luaOutput = lua_tostring(l_state, -1);
+            lua_close(l_state);
+
+            return QString(l_luaOutput);
         };
-        mutations.append(f);
+        p_mutations.append(l_mutator);
     }
 
-//    std::for_each(scripts.begin(), scripts.end(), [] (QFileInfo &file)
-//    {
-//        mutations.append(Mutation([&file](QString message, bool opened)
-//        {
-//            QString scriptPath = file.absoluteFilePath();
-//            int error = 0;
-//            std::cout << "path: + scriptPath " + scriptPath.toStdString() << std::endl;
-//            lua_State* lua = lua_open();
-//            luaL_openlibs(lua);
-//            if ((error = luaL_loadfile(lua, scriptPath.toStdString().c_str())) == 0) // the fuck
-//            {
-//                if ((error = lua_pcall(lua, 0, LUA_MULTRET, 0)) == 0)
-//                {
-//                    lua_pushstring(lua, "main");
-//                    lua_gettable(lua, LUA_GLOBALSINDEX);
-//                    lua_pcall(lua, 2, 1, 0);
-//                }
-//            }
-//            lua_close(lua);
-//            return 0;
-//        }));
-//    });
 }
 
 
@@ -112,16 +83,16 @@ StringObfuscator::~StringObfuscator()
 {
 }
 
-void StringObfuscator::obfuscate(QString& input)
+QString StringObfuscator::obfuscate(QString p_input)
 {
-	QString output = "";
+    QString l_output = "";
 
-    for (QChar Char : input)
-        output += (mutations[qrand() % mutations.size()])(QString(Char));
+    for (const QChar l_char : p_input)
+        l_output += (p_mutations[qrand() % p_mutations.size()])(QString(l_char));
 
-    for (Mutation mutation : mutations)
-        if (mutation.open())
-            output += mutation("");
+    for (Mutation l_mutation : p_mutations)
+        if (l_mutation.open())
+            l_output += l_mutation("");
 
-	input = output;
+    return l_output;
 }

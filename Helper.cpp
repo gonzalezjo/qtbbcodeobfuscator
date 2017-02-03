@@ -3,12 +3,12 @@
 
 QString Helper::color()
 {
-    QString output = "";
+    QString l_output = "";
 
     for (int i = 0; i < 6; i++)
-        output += QString::number(qrand() % 16, 16);
+        l_output += QString::number(qrand() % 16, 16);
 
-    return output;
+    return l_output;
 }
 
 Helper::Helper()

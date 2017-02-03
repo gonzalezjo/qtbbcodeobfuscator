@@ -6,9 +6,9 @@
 class StringObfuscator
 {
 public:
-	StringObfuscator();
-	~StringObfuscator();
-	static void obfuscate(QString& input);
+    StringObfuscator();
+    ~StringObfuscator();
+    static QString obfuscate(QString p_input);
 private:
-	static QList<Mutation> mutations;
+    static QList<Mutation> p_mutations;
 };
