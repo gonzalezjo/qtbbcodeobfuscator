@@ -10,5 +10,5 @@ public:
     ~StringObfuscator();
     static QString obfuscate(QString p_input);
 private:
-    static QList<Mutation> p_mutations;
+    static QList<Mutation> m_mutations;
 };
