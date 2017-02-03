@@ -8,7 +8,7 @@ class StringObfuscator
 public:
     StringObfuscator();
     ~StringObfuscator();
-    static QString obfuscate(QString input);
+    static QString obfuscate(QString p_input);
 private:
     static QList<Mutation> p_mutations;
 };
