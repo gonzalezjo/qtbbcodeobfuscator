@@ -2,21 +2,19 @@
 #include <qstring.h>
 #include <functional>
 
-using Function = std::function<QString(QString, bool)>;
+using function = std::function<QString(QString, bool)>;
 
 class Mutation
 {
 public:
-    Mutation(Function f) : f_(f), isOpened_(false), wasUsed_(false) // initializer list
+    Mutation(function f) : m_function(f), m_isOpened(false)
 	{		
 	}
 
-	QString operator()(QString message);
-	bool open();
-
+    QString operator()(QString p_message);
+    bool open();
 private:
-    Function f_;
-	bool isOpened_; 
-	bool wasUsed_;
+    function m_function;
+	bool m_isOpened; 
 };
 
