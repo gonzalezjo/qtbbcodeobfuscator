@@ -11,7 +11,7 @@ public:
     {
     }
     QString operator()(QString p_message);
-    bool open();
+    bool isOpen();
 private:
     function m_function;
     bool m_isOpen;
