@@ -7,14 +7,13 @@ using function = std::function<QString(QString, bool)>;
 class Mutation
 {
 public:
-    Mutation(function f) : m_function(f), m_isOpened(false)
-	{		
-	}
-
+    Mutation(function p_function) : m_function(p_function), m_isOpen(false)
+    {
+    }
     QString operator()(QString p_message);
     bool open();
 private:
     function m_function;
-	bool m_isOpened; 
+    bool m_isOpen;
 };
 
