@@ -1,16 +1,19 @@
 #include <QtCore/QCoreApplication>
 #include "StringObfuscator.h"
 #include <iostream>
+#include <QTextStream>
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication a(argc, argv);
+    QCoreApplication l_application(argc, argv);
 
-    QString input = QString("testingmagicalitiness");
+    std::cout << "Enter a string to obfuscate." << std::endl;
 
-    StringObfuscator().obfuscate(input);
+    QTextStream l_stream(stdin);
 
-    std::cout << input.toStdString() << std::endl;
+    const QString l_output = StringObfuscator().obfuscate(l_stream.readLine());
 
-    return a.exec();
+    std::cout << l_output.toStdString() << std::endl;
+
+    return l_application.exec();
 }
