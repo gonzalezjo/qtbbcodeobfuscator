@@ -5,8 +5,8 @@
 class Helper
 {
 public:
-	Helper();
-	~Helper();
+    Helper();
+    ~Helper();
     static QString color();
 private:
 };
