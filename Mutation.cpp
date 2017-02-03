@@ -1,17 +1,14 @@
 #include "Mutation.h"
 
-
-QString Mutation::operator()(QString message)
+QString Mutation::operator()(QString p_message)
 {
-    isOpened_ = !isOpened_;
-	message = f_(message, isOpened_);
-	if (!isOpened_)
-		wasUsed_ = true;
-	return message;
+    m_isOpen = !m_isOpen;
+    p_message = m_function(p_message, m_isOpen);
+    return p_message;
 }
 
 bool Mutation::open()
 {
-	return isOpened_;
+    return m_isOpen;
 }
 
